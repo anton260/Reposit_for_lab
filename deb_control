@@ -1,0 +1,7 @@
+Package: count-files
+Version: 1.0-1
+Section: utils
+Priority: optional
+Architecture: all
+Maintainer: Anton <anton@example.com>
+Description: Script to count files in /etc from Lab 2
