@@ -20,10 +20,14 @@ pipeline {
 
         stage('Test in Docker') {
             steps {
-                echo "--- Starting Docker Test ---"
-                sh '''
-                    docker run --rm -v $(pwd):/test -w /test ubuntu:22.04 bash -c "apt-get update && apt-get install -y ./count-files.deb && echo 'Running script:' && /usr/local/bin/count_files.sh"
-                '''
+                echo "--- Building Test Image ---"
+                sh 'echo "FROM ubuntu:22.04" > Dockerfile.test'
+                sh 'echo "COPY count-files.deb /tmp/packet.deb" >> Dockerfile.test'
+                sh 'echo "RUN apt-get update && apt-get install -y /tmp/packet.deb" >> Dockerfile.test'
+                sh 'echo "CMD /usr/local/bin/count_files.sh" >> Dockerfile.test'
+                
+                sh 'docker build -f Dockerfile.test -t test-image .'
+                sh 'docker run --rm test-image'
             }
         }
     }
