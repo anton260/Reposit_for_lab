@@ -19,15 +19,11 @@ pipeline {
         }
 
         stage('Test in Docker') {
-            agent { 
-                docker { image 'ubuntu:22.04' } 
-            }
             steps {
-                sh 'apt-get update'
-                sh 'apt-get install -y ./count-files.deb'
-                
-                echo "--- Executing the script ---"
-                sh '/usr/local/bin/count_files.sh'
+                echo "--- Starting Docker Test ---"
+                sh '''
+                    docker run --rm -v $(pwd):/test -w /test ubuntu:22.04 bash -c "apt-get update && apt-get install -y ./count-files.deb && echo 'Running script:' && /usr/local/bin/count_files.sh"
+                '''
             }
         }
     }
